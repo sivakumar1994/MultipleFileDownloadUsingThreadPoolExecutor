@@ -1,5 +1,9 @@
 package com.example.threadpoolexectordemo.filedownloading.view;
 
+import android.Manifest;
+import android.app.Activity;
+import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,6 +13,8 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -22,20 +28,15 @@ import com.example.threadpoolexectordemo.model.FileDetails;
 import java.util.List;
 
 
-public class FileDownloadingFragment extends Fragment implements FileDownloadingView, View.OnClickListener{
+public class FileDownloadingFragment extends Fragment implements FileDownloadingView, View.OnClickListener {
 
-    private static FileDownloadingFragment instance;
+
+    private static final int EXTERNAL_WRITE_REQ = 010;
     private FileDownloadPresenterImpl fileDownloadingPresenter;
     private RecyclerView recyclerView;
     private FileDownloadingAdapter fileDownloadingAdapter;
     private Button btnDownloadAll;
-
-    public static FileDownloadingFragment newInstance() {
-        if (instance == null)
-            return instance = new FileDownloadingFragment();
-        else
-            return instance;
-    }
+    private boolean isPermissionGranted;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -52,6 +53,7 @@ public class FileDownloadingFragment extends Fragment implements FileDownloading
         setRecyclerView();
         setListener();
         fileDownloadingPresenter.loadFile();
+        checkPermission();
     }
 
     private void initView(View view) {
@@ -69,6 +71,29 @@ public class FileDownloadingFragment extends Fragment implements FileDownloading
         btnDownloadAll.setOnClickListener(this);
     }
 
+    private void checkPermission() {
+        if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            isPermissionGranted = false;
+            ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, EXTERNAL_WRITE_REQ);
+
+        } else
+            isPermissionGranted = true;
+    }
+
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch (requestCode) {
+            case EXTERNAL_WRITE_REQ:
+                if (resultCode == Activity.RESULT_OK)
+                    isPermissionGranted = true;
+                else
+                    Toast.makeText(getContext(), "Permission denied", Toast.LENGTH_SHORT).show();
+
+        }
+    }
+
     @Override
     public void showDownloadFile(List<FileDetails> fileDetails) {
         fileDownloadingAdapter.setData(fileDetails);
@@ -83,6 +108,12 @@ public class FileDownloadingFragment extends Fragment implements FileDownloading
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.btn_download_all:
+                if (isPermissionGranted)
+                    Toast.makeText(getContext(), "Permission denied", Toast.LENGTH_SHORT).show();
+
+                else
+                    Toast.makeText(getContext(), "Permission denied", Toast.LENGTH_SHORT).show();
+
                 break;
         }
     }

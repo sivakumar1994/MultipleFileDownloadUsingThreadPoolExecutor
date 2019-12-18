@@ -14,15 +14,16 @@ public class MainActivity extends AppCompatActivity {
 
     private ViewPager viewPager;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        getSupportFragmentManager().beginTransaction().add(R.id.frame_layout, FileDownloadingFragment.newInstance())
+        getSupportFragmentManager().beginTransaction().add(R.id.frame_layout, new FileDownloadingFragment())
                 .addToBackStack(FileDownloadingFragment.class.getSimpleName()).commit();
         initView();
-
     }
+
 
     private void initView() {
         tabLayout = findViewById(R.id.tab_layout);
