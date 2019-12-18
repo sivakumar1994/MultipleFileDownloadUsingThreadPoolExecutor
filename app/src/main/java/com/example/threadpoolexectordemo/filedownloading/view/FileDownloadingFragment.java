@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -21,12 +22,13 @@ import com.example.threadpoolexectordemo.model.FileDetails;
 import java.util.List;
 
 
-public class FileDownloadingFragment extends Fragment implements FileDownloadingView {
+public class FileDownloadingFragment extends Fragment implements FileDownloadingView, View.OnClickListener{
 
     private static FileDownloadingFragment instance;
     private FileDownloadPresenterImpl fileDownloadingPresenter;
     private RecyclerView recyclerView;
-    private  FileDownloadingAdapter fileDownloadingAdapter;
+    private FileDownloadingAdapter fileDownloadingAdapter;
+    private Button btnDownloadAll;
 
     public static FileDownloadingFragment newInstance() {
         if (instance == null)
@@ -48,17 +50,23 @@ public class FileDownloadingFragment extends Fragment implements FileDownloading
         fileDownloadingPresenter = new FileDownloadPresenterImpl(this);
         initView(view);
         setRecyclerView();
+        setListener();
         fileDownloadingPresenter.loadFile();
     }
 
     private void initView(View view) {
         recyclerView = view.findViewById(R.id.recyclerView);
+        btnDownloadAll = view.findViewById(R.id.btn_download_all);
     }
 
     private void setRecyclerView() {
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-         fileDownloadingAdapter = new FileDownloadingAdapter();
+        fileDownloadingAdapter = new FileDownloadingAdapter();
         recyclerView.setAdapter(fileDownloadingAdapter);
+    }
+
+    private void setListener() {
+        btnDownloadAll.setOnClickListener(this);
     }
 
     @Override
@@ -69,5 +77,13 @@ public class FileDownloadingFragment extends Fragment implements FileDownloading
     @Override
     public void showToast(String message) {
         Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.btn_download_all:
+                break;
+        }
     }
 }

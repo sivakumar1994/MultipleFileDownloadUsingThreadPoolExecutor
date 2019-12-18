@@ -27,5 +27,10 @@ public class FileDownloadPresenterImpl implements FileDownloadingPresenter {
         fileDownloadingView.showDownloadFile(fileDetails);
     }
 
+    @Override
+    public void DownloadAllFile() {
+        //todo in the functionality integration
+    }
+
 
 }

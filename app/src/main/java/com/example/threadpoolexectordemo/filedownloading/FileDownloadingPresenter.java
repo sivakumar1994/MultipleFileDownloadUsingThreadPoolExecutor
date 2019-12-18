@@ -8,4 +8,5 @@ public interface FileDownloadingPresenter {
      void loadFile();
      void showErrorMessage(String message);
      void setFileDetails(List<FileDetails> fileDetails);
+     void DownloadAllFile();
 }
