@@ -19,6 +19,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.threadpoolexectordemo.DownloadTask;
 import com.example.threadpoolexectordemo.R;
 import com.example.threadpoolexectordemo.filedownloading.FileDownloadPresenterImpl;
 import com.example.threadpoolexectordemo.filedownloading.FileDownloadingAdapter;
@@ -108,11 +109,12 @@ public class FileDownloadingFragment extends Fragment implements FileDownloading
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.btn_download_all:
-                if (isPermissionGranted)
-                    Toast.makeText(getContext(), "Permission denied", Toast.LENGTH_SHORT).show();
+               // if (isPermissionGranted) {
+                   fileDownloadingAdapter.downloadAll();
+                //}
 
-                else
-                    Toast.makeText(getContext(), "Permission denied", Toast.LENGTH_SHORT).show();
+              //  else
+                //    Toast.makeText(getContext(), "Permission denied", Toast.LENGTH_SHORT).show();
 
                 break;
         }

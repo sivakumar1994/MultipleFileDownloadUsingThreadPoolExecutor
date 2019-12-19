@@ -4,11 +4,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
+import android.widget.SeekBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.threadpoolexectordemo.DownloadTask;
 import com.example.threadpoolexectordemo.R;
 import com.example.threadpoolexectordemo.model.FileDetails;
 import com.example.threadpoolexectordemo.utils.CustomUtils;
@@ -30,6 +33,7 @@ public class FileDownloadingAdapter extends RecyclerView.Adapter<FileDownloading
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
         holder.tvFileName.setText(fileDetails.get(position).getVideoUrl());
         CustomUtils.getInstance().loadImage(fileDetails.get(position).getThumbnailImage(),holder.imageView);
+        holder.seekBar.setProgress(fileDetails.get(position).getSeekBarValue());
     }
 
     @Override
@@ -41,15 +45,24 @@ public class FileDownloadingAdapter extends RecyclerView.Adapter<FileDownloading
         this.fileDetails = fileDetails;
         notifyDataSetChanged();
     }
+    public void downloadAll() {
+        DownloadTask downloadTask = new DownloadTask(this,fileDetails);
+        List<String> urlList = new ArrayList<>();
+        for(FileDetails fileDetail : fileDetails )
+             urlList.add(fileDetail.getVideoUrl());
+        downloadTask.execute(urlList.toArray(new String[fileDetails.size()]));
+    }
 
     class MyViewHolder extends RecyclerView.ViewHolder {
         private TextView tvFileName;
         private ImageView imageView;
+        private SeekBar seekBar;
 
         MyViewHolder(@NonNull View itemView) {
             super(itemView);
             tvFileName = itemView.findViewById(R.id.tv_file_name);
             imageView =itemView.findViewById(R.id.img_thumbnail);
+            seekBar = itemView.findViewById(R.id.progress_bar);
         }
     }
 }

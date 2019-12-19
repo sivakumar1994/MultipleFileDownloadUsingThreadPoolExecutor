@@ -10,10 +10,19 @@ public class FileDetails {
 
     private String videoUrl;
 
+    private int seekBarValue;
+
+    public int getSeekBarValue() {
+        return seekBarValue;
+    }
+
+    public void setSeekBarValue(int seekBarValue) {
+        this.seekBarValue = seekBarValue;
+    }
+
     public String getId() {
         return id;
     }
-
     public String getThumbnailImage() {
         return thumbnailImage;
     }
