@@ -1,5 +1,6 @@
 package com.example.threadpoolexectordemo.filedownloading;
 
+import android.os.AsyncTask;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -46,11 +47,14 @@ public class FileDownloadingAdapter extends RecyclerView.Adapter<FileDownloading
         notifyDataSetChanged();
     }
     public void downloadAll() {
-        DownloadTask downloadTask = new DownloadTask(this,fileDetails);
-        List<String> urlList = new ArrayList<>();
-        for(FileDetails fileDetail : fileDetails )
-             urlList.add(fileDetail.getVideoUrl());
-        downloadTask.execute(urlList.toArray(new String[fileDetails.size()]));
+
+        int i=0;
+        for(FileDetails fileDetail : fileDetails ) {
+            DownloadTask downloadTask = new DownloadTask(this,fileDetails);
+            fileDetail.setIndex(i);
+            i++;
+           downloadTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, fileDetail);
+        }
     }
 
     class MyViewHolder extends RecyclerView.ViewHolder {

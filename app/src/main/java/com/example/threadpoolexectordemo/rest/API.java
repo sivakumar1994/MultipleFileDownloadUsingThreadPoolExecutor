@@ -8,6 +8,10 @@ import retrofit2.Call;
 import retrofit2.http.GET;
 
 public interface API {
-    @GET("5dfb84b12f00006800ff9ff4")
+    //video
+//    @GET("5dfb84b12f00006800ff9ff4")
+//    Call<List<FileDetails>> getFileDetails();
+    //image
+    @GET("5dfcc5723100007b00d2c152")
     Call<List<FileDetails>> getFileDetails();
 }

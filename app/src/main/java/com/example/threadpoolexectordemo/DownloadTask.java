@@ -1,6 +1,7 @@
 package com.example.threadpoolexectordemo;
 
 import android.os.AsyncTask;
+import android.util.Log;
 
 import com.example.threadpoolexectordemo.filedownloading.FileDownloadingAdapter;
 import com.example.threadpoolexectordemo.model.FileDetails;
@@ -13,7 +14,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.List;
 
-public class DownloadTask extends AsyncTask<String, Integer, String> {
+public class DownloadTask extends AsyncTask<FileDetails, Integer, String> {
 
     String folderPath = "/storage/emulated/0/MyVideo/";
     private HttpURLConnection httpURLConnection;
@@ -33,65 +34,65 @@ public class DownloadTask extends AsyncTask<String, Integer, String> {
     @Override
     protected void onProgressUpdate(Integer... values) {
         super.onProgressUpdate(values);
-        fileDetails.get(i).setSeekBarValue(values[i]);
-        fileDownloadingAdapter.notifyItemChanged(i);
+        fileDetails.get(i).setSeekBarValue(values[0]);
+        Log.v("test","progress bar update position: "+ i);
+        fileDownloadingAdapter.notifyDataSetChanged();
     }
 
     @Override
-    protected String doInBackground(String... urls) {
-        try {
-            i++;
-            URL url = new URL(urls[i]);
-            int len = urls[i].lastIndexOf("/");
-            String fileName = urls[i].substring(len);
-            String filePath = folderPath + fileName;
-            httpURLConnection = (HttpURLConnection) url.openConnection();
-            httpURLConnection.connect();
-            if (httpURLConnection.getResponseCode() != HttpURLConnection.HTTP_OK)
-                return "Server return " + httpURLConnection.getResponseCode() + httpURLConnection.getResponseMessage();
-            int fileLength = httpURLConnection.getContentLength();
-
-            File file = new File(filePath);
-            File parent = file.getParentFile();
-            if (!parent.exists()) {
-                parent.mkdirs();
-            }
-            if (file.exists()) {
-                file.delete();
-            }
-
-            //   inputStream = new FileInputStream(file);
-            inputStream = httpURLConnection.getInputStream();
-            outputStream = new FileOutputStream(file);
-            byte data[] = new byte[4096];
-            long total = 0;
-            int count;
-            while ((count = inputStream.read(data)) != -1) {
-                // allow canceling with back button
-                if (isCancelled()) {
-                    inputStream.close();
-                    return null;
-                }
-                total += count;
-                // publishing the progress....
-                if (fileLength > 0) // only if total length is known
-                    publishProgress((int) (total * 100 / fileLength));
-                outputStream.write(data, 0, count);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
+    protected String doInBackground(FileDetails... fileDetails) {
             try {
-                if (outputStream != null)
-                    outputStream.close();
-                if (inputStream != null)
-                    inputStream.close();
-            } catch (IOException ingnored) {
+                i=fileDetails[0].getIndex();
+                URL url = new URL(fileDetails[0].getVideoUrl());
+                int len = fileDetails[0].getVideoUrl().lastIndexOf("/");
+                String fileName =fileDetails[0].getVideoUrl().substring(len);
+                String filePath = folderPath + fileName;
+                httpURLConnection = (HttpURLConnection) url.openConnection();
+                httpURLConnection.connect();
+                if (httpURLConnection.getResponseCode() != HttpURLConnection.HTTP_OK)
+                    return "Server return " + httpURLConnection.getResponseCode() + httpURLConnection.getResponseMessage();
+                int fileLength = httpURLConnection.getContentLength();
 
+                File file = new File(filePath);
+                File parent = file.getParentFile();
+                if (!parent.exists()) {
+                    parent.mkdirs();
+                }
+                if (file.exists()) {
+                    file.delete();
+                }
+
+                inputStream = httpURLConnection.getInputStream();
+                outputStream = new FileOutputStream(file);
+                byte data[] = new byte[4096];
+                long total = 0;
+                int count;
+                while ((count = inputStream.read(data)) != -1) {
+                    // allow canceling with back button
+                    if (isCancelled()) {
+                        inputStream.close();
+                        return null;
+                    }
+                    total += count;
+                    // publishing the progress....
+                    if (fileLength > 0) // only if total length is known
+                        publishProgress((int) (total * 100 / fileLength));
+                    outputStream.write(data, 0, count);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            } finally {
+                try {
+                    if (outputStream != null)
+                        outputStream.close();
+                    if (inputStream != null)
+                        inputStream.close();
+                } catch (IOException ingnored) {
+
+                }
             }
-        }
-        if (httpURLConnection != null)
-            httpURLConnection.disconnect();
+            if (httpURLConnection != null)
+                httpURLConnection.disconnect();
         return null;
     }
 }
