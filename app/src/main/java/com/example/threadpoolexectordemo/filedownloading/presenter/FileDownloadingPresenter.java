@@ -1,4 +1,6 @@
-package com.example.threadpoolexectordemo.filedownloading;
+package com.example.threadpoolexectordemo.filedownloading.presenter;
+
+import android.os.Message;
 
 import com.example.threadpoolexectordemo.model.FileDetails;
 
@@ -8,5 +10,6 @@ public interface FileDownloadingPresenter {
      void loadFile();
      void showErrorMessage(String message);
      void setFileDetails(List<FileDetails> fileDetails);
-     void DownloadAllFile();
+     void downloadAllFile();
+     void updateProgress(Message message);
 }

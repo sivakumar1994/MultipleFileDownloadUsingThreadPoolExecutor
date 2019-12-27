@@ -12,12 +12,22 @@ public class FileDetails {
 
     private int index;
 
+    private boolean isDownloaded = false;
+
     public int getIndex() {
         return index;
     }
 
     public void setIndex(int index) {
         this.index = index;
+    }
+
+    public boolean isDownloaded() {
+        return isDownloaded;
+    }
+
+    public void setDownloaded(boolean downloaded) {
+        isDownloaded = downloaded;
     }
 
     private int seekBarValue;

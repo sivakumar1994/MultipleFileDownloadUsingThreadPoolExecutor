@@ -1,18 +1,17 @@
-package com.example.threadpoolexectordemo.filedownloading;
+package com.example.threadpoolexectordemo.filedownloading.view;
 
 import android.os.AsyncTask;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.threadpoolexectordemo.DownloadTask;
+import com.example.threadpoolexectordemo.backgroundservice.DownloadTask;
 import com.example.threadpoolexectordemo.R;
 import com.example.threadpoolexectordemo.model.FileDetails;
 import com.example.threadpoolexectordemo.utils.CustomUtils;
@@ -32,9 +31,11 @@ public class FileDownloadingAdapter extends RecyclerView.Adapter<FileDownloading
 
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
-        holder.tvFileName.setText(fileDetails.get(position).getVideoUrl());
-        CustomUtils.getInstance().loadImage(fileDetails.get(position).getThumbnailImage(),holder.imageView);
-        holder.seekBar.setProgress(fileDetails.get(position).getSeekBarValue());
+        if (!fileDetails.get(position).isDownloaded()) {
+            holder.tvFileName.setText(fileDetails.get(position).getVideoUrl());
+            CustomUtils.getInstance().loadImage(fileDetails.get(position).getThumbnailImage(), holder.imageView);
+            holder.seekBar.setProgress(fileDetails.get(position).getSeekBarValue());
+        }
     }
 
     @Override
@@ -46,15 +47,21 @@ public class FileDownloadingAdapter extends RecyclerView.Adapter<FileDownloading
         this.fileDetails = fileDetails;
         notifyDataSetChanged();
     }
+
     public void downloadAll() {
 
-        int i=0;
-        for(FileDetails fileDetail : fileDetails ) {
-            DownloadTask downloadTask = new DownloadTask(this,fileDetails);
+        int i = 0;
+        for (FileDetails fileDetail : fileDetails) {
+            DownloadTask downloadTask = new DownloadTask(this, fileDetails);
             fileDetail.setIndex(i);
             i++;
-           downloadTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, fileDetail);
+            downloadTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, fileDetail);
         }
+
+    }
+
+    public List<FileDetails> getFileDetails() {
+        return fileDetails;
     }
 
     class MyViewHolder extends RecyclerView.ViewHolder {
@@ -65,7 +72,7 @@ public class FileDownloadingAdapter extends RecyclerView.Adapter<FileDownloading
         MyViewHolder(@NonNull View itemView) {
             super(itemView);
             tvFileName = itemView.findViewById(R.id.tv_file_name);
-            imageView =itemView.findViewById(R.id.img_thumbnail);
+            imageView = itemView.findViewById(R.id.img_thumbnail);
             seekBar = itemView.findViewById(R.id.progress_bar);
         }
     }

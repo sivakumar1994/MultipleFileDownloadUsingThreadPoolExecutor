@@ -1,5 +1,6 @@
-package com.example.threadpoolexectordemo.filedownloading;
+package com.example.threadpoolexectordemo.filedownloading.model;
 
+import com.example.threadpoolexectordemo.filedownloading.presenter.FileDownloadPresenterImpl;
 import com.example.threadpoolexectordemo.model.FileDetails;
 import com.example.threadpoolexectordemo.rest.RestClient;
 
